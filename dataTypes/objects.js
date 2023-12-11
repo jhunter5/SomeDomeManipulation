@@ -30,3 +30,5 @@ console.log(user2)
 
 
 console.log("age" in user2) // This will return true
+
+console.log(user.__proto__) 

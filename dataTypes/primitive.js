@@ -4,6 +4,8 @@
 // 1. String
 let userName = "jhunter"
 
+console.log("Hello ${userName}") // This is called string interpolation dont work with " " only with ` `
+console.log(`Hello ${userName}`) 
 // 2. Number
 
 let age = 21
