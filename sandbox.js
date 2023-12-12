@@ -36,3 +36,22 @@ b = "python"
 let lenguage = a ?? b ?? "JavaScript"
 
 console.log(lenguage)
+
+// this is a function declaration
+function giveRandomNumber() {
+    return Math.random() * 10
+}
+
+for (let i = 0; i < 10; i++) {
+    console.log(giveRandomNumber())
+}
+
+// this is a function expression    
+let sayHi = function () {
+    return "Hello"
+}
+
+console.log(sayHi == sayHi)
+
+
+func
