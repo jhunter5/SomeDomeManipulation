@@ -112,10 +112,16 @@ function MakeSoccerPlayer(name, team, position, number, goals, assists, yellowCa
         getTransfered(newTeam){
             this.team = newTeam
         },
+        toString(){
+            return `${this.name} is a ${this.position} for ${this.team} and has scored ${this.goals} goals`;
+        },
+        valeuOf: function(){
+            return this.goals;
+        }
     }
 }
 
-let messi = MakeSoccerPlayer("Messi", "Barcelona", "Forward", 10, 50, 20, 5, 0)
+let messi = new MakeSoccerPlayer("Messi", "Barcelona", "Forward", 10, 50, 20, 5, 0)
 
 console.log(messi?.goals)
 messi.scoreGoal()
@@ -123,3 +129,20 @@ console.log(messi?.goals)
 messi.getTransfered("PSG")
 console.log(messi?.team)
 messi.getTransfered("Inter Miami")
+
+let ronaldo = MakeSoccerPlayer("Ronaldo", "Juventus", "Forward", 7, 40, 10, 2, 0)
+
+let messiString = String(messi)
+
+console.log(messiString)
+
+// console.log(messi.goals)
+console.log(+messi)
+// console.log(hello)
+console.log(Object.keys(messi))
+
+
+
+let descriptor = Object.getOwnPropertyDescriptor(messi, "goals")
+
+console.log(descriptor)
