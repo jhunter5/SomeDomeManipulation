@@ -5,6 +5,7 @@ export default class Carrousel {
         this.images = images;
         this.circularLinkedList = new CircularLinkedList(showedImages);
         this.init();
+        console.log(this.circularLinkedList.getFocusedImage());
     }
 
     init() {
@@ -62,15 +63,24 @@ export default class Carrousel {
         });
     }
 
+    focusImage = () => {
+        let image = this.circularLinkedList.getFocusedImage().cloneNode(true);
+        document.querySelector('.focus__Item').innerHTML = '';
+        document.querySelector('.focus__Item').appendChild(image);
+    }
+
     moveRight = () => {
         this.removeDisplay();
         this.circularLinkedList.moveRight();
         this.createDisplay();
+        this.focusImage();
     }
 
     moveLeft = () => {
         this.removeDisplay();
         this.circularLinkedList.moveLeft();
         this.createDisplay();
+        console.log(this.circularLinkedList.getFocusedImage());
+        focusImage();
     }
 }

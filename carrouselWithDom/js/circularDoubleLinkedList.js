@@ -1,12 +1,13 @@
 import Node from './node.js';
 
 export default class CircularLinkedList {
-    constructor(showedImages) {
+    constructor(amountImagesShowed) {
         this.head = null;
         this.tail = null;
         this.length = 0;
         this.observer = null
-        this.showedImages = showedImages;
+        this.focusedImage = null;
+        this.showedImages = amountImagesShowed;
     }
 
     addImage(image) {
@@ -15,6 +16,7 @@ export default class CircularLinkedList {
             this.head = newNode;
             this.tail = newNode;
             this.observer = newNode;
+            this.focusedImage = newNode;
             this.tail.next = this.head;
             this.tail.prev = this.tail;
             this.length++;
@@ -25,14 +27,6 @@ export default class CircularLinkedList {
             this.tail.next = this.head;
             this.head.prev = this.tail; 
             this.length++;
-        }
-    }
-
-    printList() {
-        let currentNode = this.head;
-        for (let i = 0; i < this.length; i++) {
-            console.log(currentNode.image);
-            currentNode = currentNode.next;
         }
     }
 
@@ -48,13 +42,19 @@ export default class CircularLinkedList {
 
     moveRight(){
         this.observer = this.observer.next;
+        this.focusedImage = this.observer.next;
     }
 
     moveLeft(){
         this.observer = this.observer.prev;
+        this.focusedImage = this.observer.next;
     }
 
     getObserver(){
         return this.observer.image;
+    }
+
+    getFocusedImage(){
+        return this.focusedImage.image;
     }
 }
