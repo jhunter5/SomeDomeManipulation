@@ -1,4 +1,4 @@
-.container__Page{
+.container__carrousel{
     border: solid 1px black;
     display: flex;
     flex-direction: column;
@@ -8,7 +8,7 @@
     height: 100vh;
 }
 
-.container__Page img{
+.container__carrousel img{
     width: 300px;
     height: 300px;
 }

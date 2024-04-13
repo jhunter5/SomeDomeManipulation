@@ -1,13 +1,14 @@
 import CircularLinkedList from './circularDoubleLinkedList.js';
 
 export default class Carrousel {
-    constructor(images) {
-        this.images = images;
+    constructor(subject) {
+        this.images = null;
+        this.subject = subject;
         this.circularLinkedList = new CircularLinkedList();
         this.init();
     }
 
-    init() {
+    async init() {
         document.querySelector('.carrousel__Items').addEventListener('click', function(event) {
             if (event.target.classList.contains('item')) {
                 let image = event.target.cloneNode(true);
@@ -16,40 +17,65 @@ export default class Carrousel {
             }
         });
 
+        this.images = await this.fetchImages();
         this.addImagesToLinkedList(this.images);
         this.observer = this.circularLinkedList.head;
         this.focusedImage = this.circularLinkedList.head;
         this.createDisplay();
+        this.focusImage();  
+    }
+
+    async fetchImages() {
+        return new Promise((resolve, reject) => {
+            fetch('https://api.pexels.com/v1/search?query=' + this.subject + '&per_page=10', {
+                headers: {
+                    'Authorization': 'dOzfQ2mnFiUlcSS462Y1PxeU10HtJaPtveEtAoSOVQe5DREJrTA3CtYf'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                let images = data.photos.map(photo => photo.src.large);
+                resolve(images); 
+            })
+            .catch(error => {
+                reject(error); 
+            });
+        });
     }
 
     addImagesToLinkedList(images){
         images.forEach(image => {
-            const img = document.createElement('img');
-            img.src = image;
-            img.classList.add('item');
+            let img = this.createImageElement(image);
             this.circularLinkedList.addImage(img);
         })
     }
 
+    createImageElement(image) {
+        const img = document.createElement('img');
+        img.src = image;
+        img.classList.add('item');
+        return img;
+    }
+
     createDisplay(){
-        const imageContainer = document.querySelector('.carrousel__Items');
+        const imagesCarrouselContainer = document.querySelector('.carrousel__Items');
         const rightButton = document.createElement('button');
         const leftButton = document.createElement('button');
         leftButton.classList.add('arrow');
         leftButton.classList.add('left');
         leftButton.onclick = this.moveLeft;
         leftButton.innerHTML = '&#10094';
-        imageContainer.appendChild(leftButton);
+        imagesCarrouselContainer.appendChild(leftButton);
     
         this.getPresentationsNodes().map(image => { 
-            imageContainer.appendChild(image);
+            imagesCarrouselContainer.appendChild(image);
         });
     
         rightButton.classList.add('arrow');
         rightButton.classList.add('right');
         rightButton.onclick = this.moveRight;
         rightButton.innerHTML = '&#10095';
-        imageContainer.appendChild(rightButton);
+        imagesCarrouselContainer.appendChild(rightButton);
     }
 
     removeDisplay(){
