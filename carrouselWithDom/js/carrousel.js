@@ -1,34 +1,34 @@
 import CircularLinkedList from './circularDoubleLinkedList.js';
 
 export default class Carrousel {
-    constructor(images, showedImages) {
+    constructor(images) {
         this.images = images;
-        this.circularLinkedList = new CircularLinkedList(showedImages);
+        this.circularLinkedList = new CircularLinkedList();
         this.init();
-        console.log(this.circularLinkedList.getFocusedImage());
     }
 
     init() {
-        this.images.forEach(image => {
+        document.querySelector('.carrousel__Items').addEventListener('click', function(event) {
+            if (event.target.classList.contains('item')) {
+                let image = event.target.cloneNode(true);
+                document.querySelector('.focus__Item').innerHTML = '';
+                document.querySelector('.focus__Item').appendChild(image);
+            }
+        });
+
+        this.addImagesToLinkedList(this.images);
+        this.observer = this.circularLinkedList.head;
+        this.focusedImage = this.circularLinkedList.head;
+        this.createDisplay();
+    }
+
+    addImagesToLinkedList(images){
+        images.forEach(image => {
             const img = document.createElement('img');
             img.src = image;
             img.classList.add('item');
             this.circularLinkedList.addImage(img);
         })
-
-        document.querySelector('.carrousel__Items').addEventListener('click', function(event) {
-            if (event.target.classList.contains('item')) {
-                handleSelector(event);
-            }
-        });
-        
-        function handleSelector(event){
-            let image = event.target.cloneNode(true);
-            document.querySelector('.focus__Item').innerHTML = '';
-            document.querySelector('.focus__Item').appendChild(image);
-        }
-        
-        this.createDisplay();
     }
 
     createDisplay(){
@@ -41,7 +41,7 @@ export default class Carrousel {
         leftButton.innerHTML = '&#10094';
         imageContainer.appendChild(leftButton);
     
-        this.circularLinkedList.getPresentationsNodes().map(image => { 
+        this.getPresentationsNodes().map(image => { 
             imageContainer.appendChild(image);
         });
     
@@ -58,29 +58,48 @@ export default class Carrousel {
         const leftButton = document.querySelector('.left');
         imageContainer.removeChild(rightButton);
         imageContainer.removeChild(leftButton);
-        this.circularLinkedList.getPresentationsNodes().map(image => { 
+        this.getPresentationsNodes().map(image => { 
             imageContainer.removeChild(image);
         });
     }
 
+    getPresentationsNodes(){
+        let presentation = [];
+        let currentNode = this.observer;
+        for (let i = 0; i < 3; i++) {
+            presentation.push(currentNode.image);
+            currentNode = currentNode.next;
+        }
+        return presentation;
+    }
+
     focusImage = () => {
-        let image = this.circularLinkedList.getFocusedImage().cloneNode(true);
+        let image = this.getFocusedImage().cloneNode(true);
         document.querySelector('.focus__Item').innerHTML = '';
         document.querySelector('.focus__Item').appendChild(image);
     }
 
     moveRight = () => {
         this.removeDisplay();
-        this.circularLinkedList.moveRight();
+        this.observer = this.observer.next;
+        this.focusedImage = this.observer.next;
         this.createDisplay();
         this.focusImage();
     }
 
     moveLeft = () => {
         this.removeDisplay();
-        this.circularLinkedList.moveLeft();
+        this.observer = this.observer.prev;
+        this.focusedImage = this.observer.next;
         this.createDisplay();
-        console.log(this.circularLinkedList.getFocusedImage());
         focusImage();
+    }
+
+    getObserver(){
+        return this.observer.image;
+    }
+
+    getFocusedImage(){
+        return this.focusedImage.image;
     }
 }
