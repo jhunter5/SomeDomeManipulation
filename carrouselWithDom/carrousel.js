@@ -1,5 +1,7 @@
 import Carrousel from './modules/carrousel.js';
 
-const carrousel = new Carrousel('colombia');
+if (document.querySelector('.container__Carousel')) {
+    let carrousel = new Carrousel('javascript');
+}
 
 
