@@ -1,5 +1,5 @@
 import Carrousel from './modules/carrousel.js';
 
-const carrousel = new Carrousel('brazil');
+const carrousel = new Carrousel('colombia');
 
 
