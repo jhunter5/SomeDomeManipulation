@@ -10,12 +10,7 @@ export default class Carrousel {
     }
 
     async init() {
-        document.querySelector('.carrousel__Items').addEventListener('click', (event) =>{
-            if (event.target.classList.contains('item')) {
-                this.focusImage(event.target);
-            }
-        });
-
+        
         this.images = await this.fetchImages();
         this.addImagesToLinkedList(this.images);
         this.observer = this.circularLinkedList.head;
@@ -55,42 +50,51 @@ export default class Carrousel {
         return img;
     }
 
+    createButton(direction, arrow, action){
+        const button = document.createElement('button');
+        button.classList.add('arrow');
+        button.classList.add(direction);
+        button.onclick = action;
+        button.innerHTML = arrow;
+        return button;
+    }
+
+    createDiv(className){
+        const div = document.createElement('div');
+        div.classList.add(className);
+        return div;
+    }
+
     createDisplay(){
-        this.focusImage(this.focusedImage.image);
-        const imagesCarrouselContainer = document.querySelector('.carrousel__Items');
-        const rightButton = document.createElement('button');
-        const leftButton = document.createElement('button');
-        leftButton.classList.add('arrow');
-        leftButton.classList.add('left');
-        leftButton.onclick = this.moveLeft;
-        leftButton.innerHTML = '&#10094';
-        imagesCarrouselContainer.appendChild(leftButton);
+        let containerCarousel = document.querySelector('.container__Carousel');
+        let focusItem = this.createDiv('focus__Item');
+        let carouselItems = this.createDiv('carousel__Items');
+        containerCarousel.appendChild(focusItem);
+        containerCarousel.appendChild(carouselItems);
+
+        this.focusImage(this.observer.image);
+        const rightButton = this.createButton('right', '&#10095', this.moveRight);
+        const leftButton = this.createButton('left', '&#10094', this.moveLeft);
+        
+        carouselItems.appendChild(leftButton);
+        
+        this.getPresentationsNodes().map(image => { 
+            carouselItems.appendChild(image);
+        });
     
+        carouselItems.appendChild(rightButton);
+    }
+
+    refreshCarouselItems(){
+        let imagesCarrouselContainer = document.querySelector('.carousel__Items');
+        imagesCarrouselContainer.innerHTML = '';
+        let rightButton = this.createButton('right', '&#10095', this.moveRight);
+        let leftButton = this.createButton('left', '&#10094', this.moveLeft);
+        imagesCarrouselContainer.appendChild(leftButton);
         this.getPresentationsNodes().map(image => { 
             imagesCarrouselContainer.appendChild(image);
         });
-    
-        rightButton.classList.add('arrow');
-        rightButton.classList.add('right');
-        rightButton.onclick = this.moveRight;
-        rightButton.innerHTML = '&#10095';
         imagesCarrouselContainer.appendChild(rightButton);
-    }
-
-    removeDisplay(){
-        const imageContainer = document.querySelector('.carrousel__Items');
-        const rightButton = document.querySelector('.right');
-        const leftButton = document.querySelector('.left');
-        imageContainer.removeChild(rightButton);
-        imageContainer.removeChild(leftButton);
-        this.getPresentationsNodes().map(image => { 
-            imageContainer.removeChild(image);
-        });
-    }
-
-    refreshDisplay(){
-        this.removeDisplay();
-        this.createDisplay();
     }
 
     getPresentationsNodes(){
@@ -110,18 +114,16 @@ export default class Carrousel {
     }
 
     moveRight = () => {
-        this.removeDisplay();
         this.observer = this.observer.next;
         this.focusedImage = this.observer.next;
-        this.createDisplay();
+        this.refreshCarouselItems();
         this.focusImage(this.focusedImage.image);
     }
 
     moveLeft = () => {
-        this.removeDisplay();
         this.observer = this.observer.prev;
         this.focusedImage = this.observer.next;
-        this.createDisplay();
+        this.refreshCarouselItems();
         this.focusImage(this.focusedImage.image);
     }
 
